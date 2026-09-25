@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a2f">
+  <title>Hearthline | House value estimator</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <header class="site-header shell">
+    <a class="brand" href="/" aria-label="Hearthline home">
+      <span class="brand-mark">H</span>
+      <span>HEARTHLINE</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a class="active" href="/">Estimator</a>
+      <a href="/guide">Guide</a>
+      <a href="/docs" target="_blank" rel="noreferrer">API docs <span aria-hidden="true">↗</span></a>
+    </nav>
+    <div class="status-pill"><span class="status-dot"></span> Model online</div>
+  </header>
+
+  <main class="shell page-wrap">
+    <section class="hero-row">
+      <div>
+        <p class="eyebrow">CALIFORNIA HOUSING SIGNALS <span></span> RANDOM FOREST</p>
+        <h1>A clearer read<br><em>on home value.</em></h1>
+        <p class="hero-copy">Shape a few neighborhood signals into a quick, grounded estimate. Adjust the details and let the model do the heavy lifting.</p>
+      </div>
+      <div class="hero-note">
+        <span class="note-label">MODEL NOTE</span>
+        <strong>Eight signals</strong>
+        <p>Income, density, rooms, age and location work together to create each estimate.</p>
+      </div>
+    </section>
+
+    <section class="dashboard-grid">
+      <form class="glass-panel form-panel" id="prediction-form">
+        <div class="panel-heading">
+          <div>
+            <p class="panel-kicker">01 / PROPERTY PROFILE</p>
+            <h2>Set the scene</h2>
+          </div>
+          <span class="panel-icon">+</span>
+        </div>
+        <div class="field-grid">
+          <label class="field wide">
+            <span>Median income <small>($10k units)</small></span>
+            <input name="MedInc" type="number" min="0" step="0.01" value="8.3" required>
+          </label>
+          <label class="field">
+            <span>House age <small>(years)</small></span>
+            <input name="HouseAge" type="number" min="0" step="0.1" value="41" required>
+          </label>
+          <label class="field">
+            <span>Average rooms</span>
+            <input name="AveRooms" type="number" min="0" step="0.01" value="7" required>
+          </label>
+          <label class="field">
+            <span>Average bedrooms</span>
+            <input name="AveBedrms" type="number" min="0" step="0.01" value="1" required>
+          </label>
+          <label class="field">
+            <span>Population</span>
+            <input name="Population" type="number" min="0" step="1" value="322" required>
+          </label>
+          <label class="field">
+            <span>Average occupancy</span>
+            <input name="AveOccup" type="number" min="0" step="0.01" value="2.5" required>
+          </label>
+          <label class="field">
+            <span>Latitude</span>
+            <input name="Latitude" type="number" min="32" max="42" step="0.0001" value="37.9" required>
+          </label>
+          <label class="field">
+            <span>Longitude</span>
+            <input name="Longitude" type="number" min="-125" max="-114" step="0.0001" value="-122.2" required>
+          </label>
+        </div>
+        <button class="primary-button" type="submit">
+          <span>Run estimate</span><span class="button-arrow" aria-hidden="true">→</span>
+        </button>
+        <p class="form-footnote">Estimates are directional and expressed in current dollars.</p>
+      </form>
+
+      <section class="glass-panel result-panel" aria-live="polite">
+        <div class="panel-heading result-heading">
+          <div>
+            <p class="panel-kicker">02 / MODEL READOUT</p>
+            <h2>Your estimate</h2>
+          </div>
+          <span class="result-state" id="result-state">Ready</span>
+        </div>
+        <div class="result-main">
+          <span class="result-label">PREDICTED VALUE</span>
+          <strong id="predicted-price">$--</strong>
+          <span class="result-short" id="predicted-short">Submit a profile to begin</span>
+        </div>
+        <div class="range-block">
+          <div class="range-head"><span>Likely range</span><span id="range-value">$--</span></div>
+          <div class="range-track"><span id="range-marker"></span></div>
+          <p>Based on the model's average error of approximately $32,773.</p>
+        </div>
+        <div class="result-meta">
+          <div><span>ENGINE</span><strong>Random Forest</strong></div>
+          <div><span>FEATURES</span><strong>8 signals</strong></div>
+          <div><span>STATUS</span><strong class="online-text">Live</strong></div>
+        </div>
+        <div class="error-message" id="error-message" role="alert"></div>
+      </section>
+    </section>
+
+    <section class="glass-panel upload-panel">
+      <div>
+        <p class="panel-kicker">03 / BATCH PREDICTION</p>
+        <h2>Scale the read.</h2>
+        <p class="upload-copy">Upload rows with the same eight feature columns and download a completed predictions file.</p>
+        <div class="upload-steps"><span class="step-active">01 Select</span><span>02 Process</span><span>03 Download</span></div>
+      </div>
+      <form id="upload-form" class="upload-form">
+        <label class="file-drop" for="csv-file" id="file-drop">
+          <span class="upload-symbol">↑</span>
+          <span><strong id="file-name">Drop a CSV here or choose a file</strong><small id="file-meta">Required columns are listed in the Guide</small></span>
+          <input id="csv-file" type="file" accept=".csv,text/csv" required>
+        </label>
+        <button class="secondary-button" type="submit"><span>Predict CSV</span><span class="button-arrow" aria-hidden="true">→</span></button>
+        <p class="upload-message" id="upload-message" role="status"><span class="message-dot"></span><span id="upload-message-text">Waiting for a file</span></p>
+        <div class="batch-result" id="batch-result" hidden>
+          <div class="batch-result-head"><span>RESULT PREVIEW</span><strong id="batch-count">0 rows</strong></div>
+          <div class="batch-table-wrap"><table id="batch-table"></table></div>
+          <a class="download-link" id="download-link" href="#" download="predictions.csv">Download full predictions <span aria-hidden="true">↓</span></a>
+        </div>
+      </form>
+    </section>
+
+    <section class="signal-strip">
+      <div><span class="strip-number">A</span><p><strong>Income leads</strong><br>Median income is measured in $10k units.</p></div>
+      <div><span class="strip-number">B</span><p><strong>Location matters</strong><br>Latitude and longitude anchor the neighborhood.</p></div>
+      <div><span class="strip-number">C</span><p><strong>Context rounds it out</strong><br>Density, rooms and age refine the read.</p></div>
+    </section>
+  </main>
+  <footer class="shell site-footer"><span>HEARTHLINE / HOUSE VALUE ESTIMATOR</span><span>Built for a sharper first read.</span></footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>
