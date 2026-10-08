@@ -1,0 +1,10 @@
+const fs = require('node:fs');
+const vm = require('node:vm');
+const assert = require('node:assert/strict');
+const path = require('node:path');
+const context = vm.createContext({ document: { querySelector: () => null } });
+vm.runInContext(fs.readFileSync(path.join(__dirname, '../frontend/app.js'), 'utf8'), context);
+const rows = JSON.parse(JSON.stringify(context.parseCsv('\uFEFFname,note,price\r\nA,"comma, ""quote""\nand newline",250000\r\nB,plain,300000\r\n')));
+assert.deepEqual(rows, [['name', 'note', 'price'], ['A', 'comma, "quote"\nand newline', '250000'], ['B', 'plain', '300000']]);
+assert.deepEqual(JSON.parse(JSON.stringify(context.parseCsv('a,b\n1,\n'))), [['a','b'], ['1','']]);
+console.log('CSV preview checks passed');

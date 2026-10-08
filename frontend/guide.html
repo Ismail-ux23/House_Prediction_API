@@ -14,7 +14,7 @@
     <nav class="nav-links" aria-label="Main navigation">
       <a href="/">Estimator</a><a class="active" href="/guide">Guide</a><a href="/docs" target="_blank" rel="noreferrer">API docs <span aria-hidden="true">↗</span></a>
     </nav>
-    <div class="status-pill"><span class="status-dot"></span> Model online</div>
+    <div class="status-pill"><span class="status-dot"></span> California housing</div>
   </header>
   <main class="shell guide-page">
     <section class="guide-hero">
@@ -25,7 +25,7 @@
     <section class="guide-grid">
       <article class="glass-panel guide-card"><span class="card-index">01</span><h2>Enter the signals</h2><p>Use the estimator for a single neighborhood profile. Income is entered in $10k units; location uses standard latitude and longitude.</p></article>
       <article class="glass-panel guide-card"><span class="card-index">02</span><h2>Let the forest compare</h2><p>The Random Forest model combines the eight inputs and compares their pattern with learned housing examples.</p></article>
-      <article class="glass-panel guide-card"><span class="card-index">03</span><h2>Read the range</h2><p>The range is centered on the prediction and widened by the model's average absolute error, currently about $32,773.</p></article>
+      <article class="glass-panel guide-card"><span class="card-index">03</span><h2>Read the range</h2><p>The band uses the held-out mean absolute error saved during training. It describes typical error, not a confidence interval or a guaranteed price range.</p></article>
     </section>
     <section class="glass-panel api-card">
       <div><p class="panel-kicker">QUICK REFERENCE</p><h2>One endpoint, one clean payload.</h2></div>
