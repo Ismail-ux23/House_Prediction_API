@@ -6,3 +6,6 @@ __pycache__/
 .DS_Store
 .vscode/
 house_price_model.joblib
+
+.pytest_cache/
+house_price_model_metadata.json

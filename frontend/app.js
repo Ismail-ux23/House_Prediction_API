@@ -31,7 +31,7 @@ if (form) {
 
       price.textContent = result.predicted_price;
       shortPrice.textContent = result.predicted_price_short;
-      range.textContent = result.fidence_range;
+      range.textContent = result.estimated_error_range || "Error estimate unavailable";
       marker.classList.add('is-visible');
       state.textContent = 'Updated now';
     } catch (error) {
@@ -149,18 +149,25 @@ if (uploadForm) {
 }
 
 function parseCsv(text) {
-  return text.trim().split(/\r?\n/).map((line) => {
-    const values = [];
-    let value = '';
-    let quoted = false;
-    for (const character of line) {
-      if (character === '"') quoted = !quoted;
-      else if (character === ',' && !quoted) { values.push(value); value = ''; }
-      else value += character;
-    }
-    values.push(value);
-    return values;
-  });
+  const rows = [];
+  let row = [];
+  let value = '';
+  let quoted = false;
+  const input = text.replace(/^\uFEFF/, '');
+  for (let index = 0; index < input.length; index += 1) {
+    const character = input[index];
+    if (character === '"') {
+      if (quoted && input[index + 1] === '"') { value += '"'; index += 1; }
+      else quoted = !quoted;
+    } else if (!quoted && character === ',') {
+      row.push(value); value = '';
+    } else if (!quoted && (character === '\n' || character === '\r')) {
+      if (character === '\r' && input[index + 1] === '\n') index += 1;
+      row.push(value); rows.push(row); row = []; value = '';
+    } else value += character;
+  }
+  if (value.length || row.length) { row.push(value); rows.push(row); }
+  return rows;
 }
 
 function escapeHtml(value) {
